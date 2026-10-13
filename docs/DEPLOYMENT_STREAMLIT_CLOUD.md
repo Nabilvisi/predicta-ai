@@ -1,10 +1,10 @@
 # PREDICTA AI — GitHub + Streamlit Community Cloud deployment
 
-## Current release gate
+## Current release gate (Updated 2026-10-13)
 
-This **source** package is not live and contains no real trained model. The app intentionally enters a controlled unavailable state without `artifacts/predicta_fd001_model.joblib`. Do not deploy it as a functioning predictor until the model has been trained and checked.
+This package contains the fully validated NASA C-MAPSS FD001 Random Forest champion model (`artifacts/predicta_fd001_model.joblib`), the preserved Ridge baseline (`artifacts/predicta_fd001_baseline_ridge.joblib`), full model comparison records, permutation importance metrics, test predictions, and a 20-engine evaluation sample.
 
-**Recommended baseline:** Python 3.12 (Python 3.15 lazy imports are experimental). Deploy the existing Streamlit application (`app.py`), not the .ipynb; the notebook trains and exports artifacts before deployment.
+**Recommended baseline:** Python 3.12 (Python 3.15 lazy imports remain experimental). Deploy the Streamlit application (`app.py`), connected to the `main` branch of repository `Nabilvisi/predicta-ai`.
 
 ## Route A — train locally and publish
 

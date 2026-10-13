@@ -30,13 +30,18 @@ COMPARISON = ROOT / "artifacts" / "model_comparison.csv"
 st.set_page_config(page_title="PREDICTA AI · Predictive Maintenance", page_icon="⚙️", layout="wide")
 st.markdown("""
 <style>
-[data-testid="stAppViewContainer"] { background:linear-gradient(135deg,#081421 0%,#0c1b2e 65%,#101b2b 100%); }
+[data-testid="stAppViewContainer"] { background:linear-gradient(135deg,#081421 0%,#0c1b2e 65%,#101b2b 100%); color:#ECF4FF; }
 [data-testid="stSidebar"] { background: #0a1829; }
-h1,h2,h3 {letter-spacing:-.035em;}
-[data-testid="stMetric"] {background:#13243a; border:1px solid #263b51; border-radius:14px; padding:16px;}
-[data-testid="stMetricLabel"] {color:#a8bdd4;}
+h1,h2,h3 {letter-spacing:-.035em; color:#ECF4FF;}
+[data-testid="stMetric"] {background:#13243a; border:1px solid #263b51; border-radius:14px; padding:14px 18px;}
+[data-testid="stMetricLabel"] {color:#a8bdd4; font-size:0.875rem;}
+[data-testid="stMetricValue"] {color:#ECF4FF; font-size:1.45rem !important; white-space:normal !important; word-break:break-word !important; font-variant-numeric:tabular-nums;}
 [data-testid="stHorizontalBlock"] {gap:12px;}
-[data-testid="stTabs"] button {font-weight:600;}
+[data-testid="stTabs"] button {font-weight:600; color:#a8bdd4;}
+[data-testid="stTabs"] button[aria-selected="true"] {color:#4BD5CA; border-bottom-color:#4BD5CA;}
+@media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -109,6 +114,17 @@ try:
 except (ValueError, KeyError, TypeError) as exc:
     st.error("Input failed data-contract validation: " + str(exc))
     st.stop()
+
+model_name = bundle.get("model_name", "Random forest")
+conformal_alpha = 100 * (1 - float(bundle.get("alpha", 0.1)))
+st.markdown(f"""
+<div style="background:#13243a; border:1px solid #1e3650; border-radius:8px; padding:10px 16px; margin-bottom:16px; display:flex; flex-wrap:wrap; gap:20px; align-items:center; font-size:0.875rem; color:#a8bdd4;">
+    <div><span style="color:#6c829d; text-transform:uppercase; font-size:0.72rem; font-weight:600; display:block;">Active Model</span><strong style="color:#4bd5ca;">{model_name}</strong></div>
+    <div><span style="color:#6c829d; text-transform:uppercase; font-size:0.72rem; font-weight:600; display:block;">Calibration Interval</span><strong style="color:#ecf4ff;">{conformal_alpha:.0f}% Nominal Coverage (±{bundle.get('conformal_radius', 0):.1f} cyc)</strong></div>
+    <div><span style="color:#6c829d; text-transform:uppercase; font-size:0.72rem; font-weight:600; display:block;">Input Source</span><strong style="color:#ecf4ff;">{source}</strong></div>
+    <div><span style="color:#6c829d; text-transform:uppercase; font-size:0.72rem; font-weight:600; display:block;">Benchmark Target</span><strong style="color:#ecf4ff;">NASA C-MAPSS FD001 (Physics-simulated)</strong></div>
+</div>
+""", unsafe_allow_html=True)
 
 tabs = st.tabs(["Overview", "Sensor Explorer", "RUL Prediction", "Maintenance Planner", "Sensitivity Lab", "Model Diagnostics", "Data Contract"])
 

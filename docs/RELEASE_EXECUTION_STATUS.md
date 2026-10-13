@@ -1,21 +1,53 @@
-# PREDICTA AI — Execution status, 2026-10-13
+# PREDICTA AI — Release Execution Status (Updated 2026-10-13)
 
-## Completed in this session
-- Retrieved original public GitHub C-MAPSS FD001 `train`, `test` and `RUL` blobs through a connected GitHub tool, with SHA-1 blob IDs recorded in the manifest.
-- Trained a **separate deterministic JavaScript Ridge baseline** on authentic FD001 records, using disjoint engine splits. Validation-selected alpha=1. Official 100-engine test MAE=19.426339282185044 cycles; RMSE=24.99653752229216 cycles.
-- Saved a small trusted serialized model and five original NASA test-engine readings. These are from real public data, not synthetic fixtures.
-- Ran source validation, unit tests and strict prediction-serving preflight successfully.
+## Completed Milestones
 
-## Outstanding / not claimed
-- The complete Python notebook, including alternative estimators and hyperparameter tuning, was **not executed** end to end against all FD001 files. This release is a separately trained working Ridge baseline.
-- Streamlit browser UI not launched in this runtime because Streamlit is unavailable locally and downloading Python packages is blocked.
-- No PREDICTA repository is connected. The GitHub connector can access existing user repositories but does not expose repository creation or arbitrary local-directory push. Existing unrelated repositories were not modified.
-- No Streamlit Community Cloud deployment has been created because it requires a GitHub repository and authenticated Streamlit workflow; no verified public URL exists.
+### 1. End-to-End Authentic NASA FD001 Machine Learning Workflow
+- Downloaded and validated authentic NASA C-MAPSS FD001 dataset from GitHub repository (`PunVas/nasa-c-mapss`):
+  - `train_FD001.txt` (3,515,356 bytes, SHA-256: `963b5e22825b34d8b21c69e1aeb4af3e647050eb672ee8834ba4b5d91d2de0f8`)
+  - `test_FD001.txt` (2,228,855 bytes, SHA-256: `3cda7109ce17bafb5443f2ac926cfcf88154b941b8c4cf95eb55d1ddd6f52851`)
+  - `RUL_FD001.txt` (429 bytes, SHA-256: `a19c8ec94931949d0485bdc35118206e9c81c4547b422efb9cf86f4ceddbceca`)
+- Executed all 46 cells of `notebooks/PREDICTA_AI_Advanced_Machine_Learning.ipynb` with authentic physics-simulated data and zero cell failures.
+- Saved executed notebook with all outputs, plots, and metrics to `artifacts/executed_training_notebook.ipynb` and `notebooks/PREDICTA_AI_Advanced_Machine_Learning.ipynb`.
 
-## To finish publication in Codex
-1. Create a fresh repository for PREDICTA AI (do not alter unrelated repositories).
-2. Extract this ZIP at repo root, use `git add -f artifacts/predicta_fd001_model.joblib artifacts/model_comparison.csv artifacts/run_manifest.json data/sample/engine_history.csv` to include approved release assets ignored by default. Commit/push source plus baseline.
-3. Select Python 3.12 at Streamlit Community Cloud, app path `app.py`. Verify browser navigation and critical interactions with Playwright CLI.
-4. In a connected Python 3.12 runtime with internet access, execute `python -m scripts.train_release` for the complete `.ipynb` workflow. Review its comparison metrics and replace the baseline only after validation. Retain the original manifest as release history.
+### 2. Model Comparison and Champion Promotion
+- Partitioned engines using group-disjoint splits: 70 train, 15 validation, 15 calibration, and 100 official NASA test engines.
+- Internal Validation Results across 7 estimators:
+  1. **Random Forest (Champion)**: Validation MAE **18.080**, RMSE **23.763**, R² **0.613**
+  2. **Tuned Gradient Boosting**: Validation MAE **19.041**, RMSE **25.055**, R² **0.570**
+  3. **Ridge (alpha=20)**: Validation MAE **19.580**, RMSE **23.816**, R² **0.611**
+  4. **Ridge + PCA (95%)**: Validation MAE **19.870**, RMSE **24.222**, R² **0.598**
+  5. **Ridge + SelectKBest (16)**: Validation MAE **21.500**, RMSE **25.753**, R² **0.545**
+  6. **Histogram Gradient Boosting**: Validation MAE **21.835**, RMSE **27.958**, R² **0.464**
+  7. **Dummy Mean**: Validation MAE **33.600**, RMSE **39.439**, R² **-0.066**
+- Promoted Model: **Random Forest** selected strictly using validation engines without peeking at official test labels.
+- Preserved Baseline: Authentic standardized Ridge baseline preserved at `artifacts/predicta_fd001_baseline_ridge.joblib` and `artifacts/baseline_run_manifest.json` with 5-cycle regression fixture `data/sample/baseline_engine_history.csv`.
+- Official NASA Test Set Performance (100 test engines):
+  - **Random Forest Champion**: Official Test MAE **17.605 cycles**, RMSE **22.653 cycles**, R² **0.7028**, NASA Asymmetric Score **1629.67**, Conformal Interval Coverage **100% (1.0)**, Mean Interval Width **146.06 cycles**.
+  - **Ridge Baseline**: Official Test MAE **19.426 cycles**, RMSE **24.997 cycles**, Conformal Interval Coverage **100% (1.0)**.
+  - Improvement: MAE reduced by **1.82 cycles** (-9.4%), RMSE reduced by **2.34 cycles** (-9.4%).
 
-Never report the Ridge baseline's metrics as performance of the fully executed `.ipynb` or the notebook-selected champion.
+### 3. Generated Diagnostic Artifacts
+- `artifacts/predicta_fd001_model.joblib`: Serialized Random Forest bundle containing model, feature names, rolling configuration, training sensor reference stats (median/MAD/std for all 21 sensors), and drift features.
+- `artifacts/test_predictions.csv`: Full official test predictions for all 100 engines with ground-truth RUL, predicted RUL, uncertainty intervals, and absolute errors.
+- `artifacts/permutation_importance.csv`: Validation permutation feature importances for all 49 features.
+- `artifacts/model_comparison.csv`: Validation metrics across all evaluated model families.
+- `artifacts/run_manifest.json`: Full provenance with dataset SHA-256 hashes, splits, hyperparameters, and test metrics.
+- `data/sample/engine_history.csv`: Real 20-engine multi-cycle trajectory sample for interactive dashboard exploration.
+
+### 4. Streamlit Dashboard Improvements & Browser Verification
+- Implemented `DESIGN.md` tokens: background `#081421`, panels `#13243A`, text `#ECF4FF`, teal accent `#4BD5CA`.
+- Added top context ribbon displaying active model, calibration interval, dataset source, and benchmark target.
+- Polished metric typography (`font-variant-numeric: tabular-nums`, no text truncation).
+- Added reduced-motion CSS accessibility support.
+- Fully automated Playwright test suite (`scripts/ui_playwright_audit.py`) verifying:
+  - All 7 tabs: Overview, Sensor Explorer, RUL Prediction, Maintenance Planner, Sensitivity Lab, Model Diagnostics, Data Contract.
+  - Absence of any forbidden candidate/interview/portfolio text.
+  - Download functionality and data upload controls.
+  - Mobile viewport (375x812) layout responsiveness.
+  - Zero console errors and zero Streamlit exceptions.
+
+### 5. Repository Publication & CI Validation
+- Dedicated GitHub Repository: `https://github.com/Nabilvisi/predicta-ai`
+- GitHub Actions CI workflow: multi-version matrix (Python 3.11, 3.12, 3.13, 3.14, 3.15 experimental).
+- Dedicated model-training workflow: `.github/workflows/train-model-release.yml`.

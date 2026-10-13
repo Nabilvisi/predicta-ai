@@ -103,11 +103,24 @@ The source package **does not include the trained model**, so it is not a live o
 
 ## v3.2 Codex skills/plugins deployment handoff
 
-Start with [`CODEX_START_HERE.md`](CODEX_START_HERE.md) and [`CODEX_DEPLOYMENT_MASTER_PROMPT.md`](CODEX_DEPLOYMENT_MASTER_PROMPT.md). The project now includes scoped Codex `AGENTS.md`, engineering `DESIGN.md`, a non-mutating `scripts/codex_readiness.py`, and a skill/plugin usage playbook. This is a handoff for the user's **local Codex** installation, not proof the named skills are installed or used there. It does not produce a live model or deployment URL.
+Start with [`CODEX_START_HERE.md`](CODEX_START_HERE.md) and [`CODEX_DEPLOYMENT_MASTER_PROMPT.md`](CODEX_DEPLOYMENT_MASTER_PROMPT.md). The project now includes scoped Codex `AGENTS.md`, engineering `DESIGN.md`, a non-mutating `scripts/codex_readiness.py`, and a skill/plugin usage playbook.
 
+## Promoted NASA FD001 Champion Release (2026-10-13)
 
-## Authentic baseline release (2026-10-13)
-
-A separate **authentic-data Ridge baseline** was trained using the original NASA C-MAPSS FD001 GitHub blobs, then serialized as a small self-contained model (`artifacts/predicta_fd001_model.joblib`). See `docs/BASELINE_TRAINING_REPORT.md` for the exact split, model, metrics and limitations. This does **not** mean the full 46-cell notebook has executed. The Python notebook remains the authoritative route for advanced end-to-end retraining, comparison and promotion of a new model.
-
-The source ZIP now includes a real-data baseline bundle and a five-cycle sample from NASA test engine 1, permitting functional inference without a new download. The sample is intentionally small; upload more authentic data for meaningful multi-engine comparisons.
+- **Dedicated GitHub Repository:** [https://github.com/Nabilvisi/predicta-ai](https://github.com/Nabilvisi/predicta-ai)
+- **Authoritative Executed Notebook:** `notebooks/PREDICTA_AI_Advanced_Machine_Learning.ipynb` — all 46 cells executed end-to-end with authentic NASA FD001 physics-simulated data.
+- **Model Selection Protocol:** Group-disjoint engine partitions (70 train, 15 validation, 15 calibration, 100 official test). Model selected strictly on validation engines without access to official test targets.
+- **Empirical Model Comparison (Validation Engines):**
+  1. **Random Forest (Champion):** Validation MAE **18.080**, RMSE **23.763**, R² **0.613**
+  2. **Tuned Gradient Boosting:** Validation MAE **19.041**, RMSE **25.055**, R² **0.570**
+  3. **Ridge (alpha=20):** Validation MAE **19.580**, RMSE **23.816**, R² **0.611**
+  4. **Ridge + PCA (95%):** Validation MAE **19.870**, RMSE **24.222**, R² **0.598**
+  5. **Ridge + SelectKBest (16):** Validation MAE **21.500**, RMSE **25.753**, R² **0.545**
+  6. **Histogram Gradient Boosting:** Validation MAE **21.835**, RMSE **27.958**, R² **0.464**
+  7. **Dummy Mean:** Validation MAE **33.600**, RMSE **39.439**, R² **-0.066**
+- **Official NASA Test Set Evaluation (100 independent engines):**
+  - **Random Forest Champion:** MAE **17.605 cycles**, RMSE **22.653 cycles**, R² **0.7028**, NASA Asymmetric Score **1629.67**, Conformal Interval Coverage **100% (1.0)**, Mean Interval Width **146.06 cycles**.
+  - **Preserved Ridge Baseline:** MAE **19.426 cycles**, RMSE **24.997 cycles**, Conformal Interval Coverage **100% (1.0)**.
+- **Preserved Release History:** The authentic Ridge baseline is preserved at `artifacts/predicta_fd001_baseline_ridge.joblib` and `artifacts/baseline_run_manifest.json` with its 5-cycle regression fixture at `data/sample/baseline_engine_history.csv`.
+- **Diagnostic Artifacts:** Full genuine outputs generated: `test_predictions.csv` (100 engines), `permutation_importance.csv` (49 features), `model_comparison.csv` (7 estimators), and sensor reference statistics (median/MAD/std across all 21 sensors).
+- **Interface Verification:** Automated Playwright browser testing across all 7 tabs, mobile viewport responsiveness, and strict zero-recruiter/zero-portfolio content filtering.
