@@ -7,6 +7,7 @@ __lazy_modules__ = ["plotly.express", "plotly.graph_objects"]
 from pathlib import Path
 import json
 import sys
+import hashlib
 
 import joblib
 import numpy as np
@@ -79,6 +80,7 @@ def bars(df: pd.DataFrame, x: str, y: str, title: str, color: str | None = None,
     st.plotly_chart(fig, use_container_width=True)
 
 bundle = load_bundle()
+model_release_id = hashlib.sha256(ARTIFACT.read_bytes()).hexdigest()[:12] if ARTIFACT.exists() else None
 st.title("PREDICTA AI")
 st.caption("ENGINE HEALTH INTELLIGENCE  /  NASA C-MAPSS FD001  /  PHYSICS-SIMULATED TURBOFAN DATA")
 st.markdown("Sensor analytics, remaining useful life estimation, and transparent maintenance prioritization.")
@@ -131,6 +133,7 @@ conformal_alpha = 100 * (1 - float(bundle.get("alpha", 0.1)))
 st.markdown(f"""
 <div style="background:#13243a; border:1px solid #1e3650; border-radius:8px; padding:10px 16px; margin-bottom:16px; display:flex; flex-wrap:wrap; gap:20px; align-items:center; font-size:0.875rem; color:#a8bdd4;">
     <div><span style="color:#6c829d; text-transform:uppercase; font-size:0.72rem; font-weight:600; display:block;">Active Model</span><strong style="color:#4bd5ca;">{model_name}</strong></div>
+    <div><span style="color:#6c829d; text-transform:uppercase; font-size:0.72rem; font-weight:600; display:block;">Model release</span><strong style="color:#ecf4ff;">SHA256 {model_release_id}</strong></div>
     <div><span style="color:#6c829d; text-transform:uppercase; font-size:0.72rem; font-weight:600; display:block;">Calibration Interval</span><strong style="color:#ecf4ff;">{conformal_alpha:.0f}% Nominal Coverage (±{bundle.get('conformal_radius', 0):.1f} cyc)</strong></div>
     <div><span style="color:#6c829d; text-transform:uppercase; font-size:0.72rem; font-weight:600; display:block;">Input Source</span><strong style="color:#ecf4ff;">{source}</strong></div>
     <div><span style="color:#6c829d; text-transform:uppercase; font-size:0.72rem; font-weight:600; display:block;">Benchmark Target</span><strong style="color:#ecf4ff;">NASA C-MAPSS FD001 (Physics-simulated)</strong></div>
@@ -207,6 +210,7 @@ with tabs[2]:
         st.download_button("Export RUL predictions", display_preds.to_csv(index=False).encode(), "predicta_rul_predictions.csv", "text/csv")
         chosen = st.selectbox("Inspect engine", predictions.engine_id.tolist(), key="pred_engine")
         p = predictions.loc[predictions.engine_id.eq(chosen)].iloc[0]
+        st.caption(f"Engine {chosen} · observation cycle {int(p.cycle)} · input: {source} · model release SHA256 {model_release_id}")
         x,y,z=st.columns(3)
         x.metric("RUL estimate",f"{p.rul_estimate:.1f} cycles")
         y.metric("Lower interval",f"{p.rul_lower:.1f} cycles")
