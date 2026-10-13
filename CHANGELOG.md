@@ -7,8 +7,9 @@
 - Evaluated champion on 100 official test engines: MAE 17.605 cycles (vs Ridge baseline 19.426 cycles), RMSE 22.653 cycles (vs 24.997 cycles), R² 0.7028.
 - Preserved authentic Ridge baseline (`predicta_fd001_baseline_ridge.joblib`) and 5-cycle regression fixture (`baseline_engine_history.csv`).
 - Populated all interactive diagnostics: official test predictions (100 engines), permutation importances (49 features), model comparison (7 models), sensor reference stats (21 sensors), and input drift features (PSI).
-- Modernized Streamlit UI per `DESIGN.md`: dark palette, top context ribbon, tabular number metric formatting, reduced motion support.
-- Added automated Playwright test suite (`scripts/ui_playwright_audit.py`) verifying all 7 tabs, mobile responsiveness, and zero-recruiter policy.
+- Modernized Streamlit UI per `DESIGN.md`: dark palette, top context ribbon, tabular number metric formatting, priority status colors (#ef4444, #f59e0b, #38bdf8, #4bd5ca), and lines+markers rendering.
+- Expanded automated Playwright audit (`scripts/ui_playwright_audit.py`): verified all 7 tabs, valid & invalid CSV uploads, download buttons, keyboard focus navigation, mobile viewport (375x812), and zero-recruiter policy.
+- Expanded pytest test suite from 9 to 17 tests: full coverage for malformed/non-finite inputs, single observations, conformal radius boundaries, priority validation, PSI edge cases, diagnostic artifact schemas, and cross-version pipeline serving parity.
 - Published dedicated GitHub repository: `https://github.com/Nabilvisi/predicta-ai`.
 
 ## v3 packaging + Python 3.15 readiness (2026-10-13)

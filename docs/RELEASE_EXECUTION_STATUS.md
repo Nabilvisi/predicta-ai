@@ -43,11 +43,15 @@
 - Fully automated Playwright test suite (`scripts/ui_playwright_audit.py`) verifying:
   - All 7 tabs: Overview, Sensor Explorer, RUL Prediction, Maintenance Planner, Sensitivity Lab, Model Diagnostics, Data Contract.
   - Absence of any forbidden candidate/interview/portfolio text.
-  - Download functionality and data upload controls.
+  - Valid and invalid CSV upload error flows and dynamic data contract alerts.
+  - Download functionality for predictions, prioritized worklists, and sample data.
+  - Keyboard focus navigation (Tab traversal).
+  - Priority status color mapping per `DESIGN.md` (#ef4444, #f59e0b, #38bdf8, #4bd5ca).
   - Mobile viewport (375x812) layout responsiveness.
   - Zero console errors and zero Streamlit exceptions.
 
 ### 5. Repository Publication & CI Validation
 - Dedicated GitHub Repository: `https://github.com/Nabilvisi/predicta-ai`
-- GitHub Actions CI workflow: multi-version matrix (Python 3.11, 3.12, 3.13, 3.14, 3.15 experimental).
-- Dedicated model-training workflow: `.github/workflows/train-model-release.yml`.
+- GitHub Actions CI workflow: multi-version matrix (Python 3.11, 3.12, 3.13, 3.14 passing 17/17 tests; 3.15 experimental).
+- Dedicated model-training workflow: `.github/workflows/train-model-release.yml` executed and verified green (`38375006784`), producing the downloadable `predicta-model-release` artifact.
+
