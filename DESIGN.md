@@ -2,7 +2,18 @@
 
 **Product type:** rigorous engineering analysis software, not marketing, a candidate profile, or an interview showcase. Maintain the existing Streamlit implementation for this release.
 
-## Identity and visual tokens
+## Approved revision: Paper Atlas (2026-10-13)
+
+The user approved concept 02 and requested more graphics, interactive 3D motion, and less visible text. This revision supersedes the original dark visual tokens below while retaining the scientific and serving contract. Keep Streamlit and the existing trusted model.
+
+- Warm paper `#F4F2EA`, panel `#FDFCF8`, ink `#17292D`, muted text `#546966`, cobalt `#234FCC`, dividers `#CFD5C9`.
+- IBM Plex Sans for controls and analytical content; Instrument Serif for the editorial overview headline. Bundle open-source fonts and licenses.
+- Horizontal seven-tab navigation, compact source/model/calibration ribbon, overview split between a short headline and a 3D cutaway illustration, followed by actual charts and numeric alternatives.
+- The procedural turbine is explicitly **schematic / illustration**, not observed geometry, telemetry, a digital twin, a health indicator, or a fault reconstruction.
+- Motion: one finite entrance; rotation and exploded view respond to controls. Honor reduced motion, pause hidden/offscreen rendering, limit pixel ratio, release WebGL resources, and supply a static SVG fallback. No remote graphics libraries or new application framework.
+- Short visible caveats near scientific outputs; full methodology and raw schema in expandable sections. Preserve engine/cycle/source/model identity, cycle units, prediction intervals, and the non-causal sensitivity warning.
+
+## Original identity and visual tokens (superseded palette)
 - Brand: PREDICTA AI / Engine Health Intelligence.
 - Background `#081421`; sidebar/panels `#13243A`; foreground `#ECF4FF`; teal accent `#4BD5CA`.
 - Status colors: green for successful validation, amber for evidence/attention, red for actual errors. Do not present unvalidated model predictions as green/healthy.
@@ -28,4 +39,4 @@
 - Chart tooltips must identify sensor channels and unit uncertainty; do not invent physical units.
 
 ## Skill usage
-`frontend-design` can lead layout/typography, or `design-taste-frontend` can lead motion/density, but never mix contradictory art direction in one pass. Audit with `web-design-guidelines` if installed, then Playwright CLI on Streamlit's actual port. Reevaluate custom React/3D only as a separate future change request; do not block working deployment on a framework migration.
+`frontend-design` can lead layout/typography, or `design-taste-frontend` can lead motion/density, but never mix contradictory art direction in one pass. Audit with `web-design-guidelines` if installed, then Playwright CLI on Streamlit's actual port. The approved Paper Atlas request authorizes the isolated procedural WebGL illustration; no application framework migration is needed.
