@@ -1,5 +1,5 @@
 # Use a supported Python 3.11 or 3.12 environment
-numpy>=1.24,<3
+numpy>=2.5.3,<3
 pandas>=2.0,<3
 scipy>=1.11,<2
 scikit-learn>=1.7.0,<1.8.0
