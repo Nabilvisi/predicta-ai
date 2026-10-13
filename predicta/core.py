@@ -133,7 +133,14 @@ def predict_assets(raw: pd.DataFrame, bundle: dict) -> tuple[pd.DataFrame, pd.Da
     names = bundle["feature_names"]
     if names != FEATURES:
         raise ValueError("Model feature contract does not match deployment feature definition")
-    estimate = np.maximum(0, bundle["model"].predict(latest[names]))
+    model = bundle["model"]
+    if hasattr(model, "named_steps") and "impute" in model.named_steps:
+        imp = model.named_steps["impute"]
+        if not hasattr(imp, "_fill_dtype") and hasattr(imp, "_fit_dtype"):
+            imp._fill_dtype = imp._fit_dtype
+        elif not hasattr(imp, "_fit_dtype") and hasattr(imp, "_fill_dtype"):
+            imp._fit_dtype = imp._fill_dtype
+    estimate = np.maximum(0, model.predict(latest[names]))
     radius = max(float(bundle.get("conformal_radius", 0)), 0)
     scored = latest[["engine_id", "cycle"]].copy()
     scored["rul_estimate"] = estimate
