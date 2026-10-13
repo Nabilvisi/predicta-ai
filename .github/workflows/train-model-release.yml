@@ -31,7 +31,7 @@ jobs:
           python -m scripts.preflight
           python -m scripts.deployment_check --strict
       - name: Upload trusted model release for review
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: predicta-model-release
           retention-days: 14
