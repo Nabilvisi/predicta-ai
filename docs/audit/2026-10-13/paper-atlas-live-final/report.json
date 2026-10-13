@@ -1,0 +1,380 @@
+{
+  "url": "https://predicta-ai.streamlit.app",
+  "started_utc": "2026-10-13T12:12:40.407516+00:00",
+  "headless": true,
+  "checks": [
+    {
+      "name": "public availability and Champion identity",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "public model release identity",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "desktop tab: Overview",
+      "status": "PASS",
+      "detail": {
+        "characters_scanned": 1018
+      }
+    },
+    {
+      "name": "desktop tab: Sensor Explorer",
+      "status": "PASS",
+      "detail": {
+        "characters_scanned": 1239
+      }
+    },
+    {
+      "name": "desktop tab: RUL Prediction",
+      "status": "PASS",
+      "detail": {
+        "characters_scanned": 1092
+      }
+    },
+    {
+      "name": "desktop tab: Maintenance Planner",
+      "status": "PASS",
+      "detail": {
+        "characters_scanned": 962
+      }
+    },
+    {
+      "name": "desktop tab: Sensitivity Lab",
+      "status": "PASS",
+      "detail": {
+        "characters_scanned": 1056
+      }
+    },
+    {
+      "name": "desktop tab: Model Diagnostics",
+      "status": "PASS",
+      "detail": {
+        "characters_scanned": 1523
+      }
+    },
+    {
+      "name": "desktop tab: Data Contract",
+      "status": "PASS",
+      "detail": {
+        "characters_scanned": 918
+      }
+    },
+    {
+      "name": "example CSV download matches real source",
+      "status": "PASS",
+      "detail": {
+        "rows": 2435,
+        "sha256": "44f73ed398bacafa313e808b409c76b3e2fc9b25c27612f3803da0ac3c954f13",
+        "newline_normalized_source_match": true
+      }
+    },
+    {
+      "name": "Champion inference and RUL CSV download",
+      "status": "PASS",
+      "detail": {
+        "rows": 20,
+        "columns": [
+          "engine_id",
+          "cycle",
+          "rul_estimate",
+          "rul_lower",
+          "rul_upper",
+          "interval_width",
+          "priority"
+        ],
+        "sha256": "67e94645d443ca5c21959d0d8edcab2ac932919370bf2ee469063254ca38531a",
+        "local_model_parity": true
+      }
+    },
+    {
+      "name": "maintenance report download and policy parity",
+      "status": "PASS",
+      "detail": {
+        "rows": 20,
+        "columns": [
+          "engine_id",
+          "cycle",
+          "rul_estimate",
+          "rul_lower",
+          "rul_upper",
+          "interval_width",
+          "priority",
+          "priority_rank"
+        ],
+        "sha256": "e517d175ac1b45a114c6bca6a9ef0791508b56c0a00b15ae2a7b32a91fa9b4fd",
+        "local_model_parity": true
+      }
+    },
+    {
+      "name": "valid real CSV upload and changed-input inference",
+      "status": "PASS",
+      "detail": {
+        "rows": 2,
+        "columns": [
+          "engine_id",
+          "cycle",
+          "rul_estimate",
+          "rul_lower",
+          "rul_upper",
+          "interval_width",
+          "priority"
+        ],
+        "sha256": "eb097261a61dcce909e19ad3e602f97c7120ad16fc03e5aac184e3447c6af86d",
+        "local_model_parity": true
+      }
+    },
+    {
+      "name": "invalid CSV rejected: missing-columns",
+      "status": "PASS",
+      "detail": [
+        "Input failed data-contract validation: Missing required columns: cycle, engine_id, sensor_1, sensor_10, sensor_11, sensor_12, sensor_13, sensor_14, sensor_15, sensor_16, sensor_17, sensor_18, sensor_19, sensor_2, sensor_20, sensor_21, sensor_3, sensor_4, sensor_5, sensor_6, sensor_7, sensor_8, sensor_9, setting_1, setting_2, setting_3"
+      ]
+    },
+    {
+      "name": "invalid CSV rejected: duplicate-cycle",
+      "status": "PASS",
+      "detail": [
+        "Input failed data-contract validation: Duplicate (engine_id, cycle) readings detected."
+      ]
+    },
+    {
+      "name": "invalid CSV rejected: nonfinite-sensor",
+      "status": "PASS",
+      "detail": [
+        "Input failed data-contract validation: Data contains infinite or non-finite values."
+      ]
+    },
+    {
+      "name": "recovery after invalid upload",
+      "status": "PASS",
+      "detail": {
+        "rows": 2,
+        "columns": [
+          "engine_id",
+          "cycle",
+          "rul_estimate",
+          "rul_lower",
+          "rul_upper",
+          "interval_width",
+          "priority"
+        ],
+        "sha256": "d30cd4ad47e5b4d70d0c3e4f1e2630fe5b5e7ef6802f054190f8f791e48cf249",
+        "local_model_parity": true
+      }
+    },
+    {
+      "name": "keyboard navigation and activation",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "mobile 375x812 / design: Overview",
+      "status": "PASS",
+      "detail": {
+        "viewport": 375,
+        "document": 375,
+        "background": "none",
+        "color": "rgb(23, 41, 45)",
+        "accent": "rgb(35, 79, 204)",
+        "reduced": true
+      }
+    },
+    {
+      "name": "mobile 375x812 / design: Sensor Explorer",
+      "status": "PASS",
+      "detail": {
+        "viewport": 375,
+        "document": 375,
+        "background": "none",
+        "color": "rgb(23, 41, 45)",
+        "accent": "rgb(35, 79, 204)",
+        "reduced": true
+      }
+    },
+    {
+      "name": "mobile 375x812 / design: RUL Prediction",
+      "status": "PASS",
+      "detail": {
+        "viewport": 375,
+        "document": 375,
+        "background": "none",
+        "color": "rgb(23, 41, 45)",
+        "accent": "rgb(35, 79, 204)",
+        "reduced": true
+      }
+    },
+    {
+      "name": "mobile 375x812 / design: Maintenance Planner",
+      "status": "PASS",
+      "detail": {
+        "viewport": 375,
+        "document": 375,
+        "background": "none",
+        "color": "rgb(23, 41, 45)",
+        "accent": "rgb(35, 79, 204)",
+        "reduced": true
+      }
+    },
+    {
+      "name": "mobile 375x812 / design: Sensitivity Lab",
+      "status": "PASS",
+      "detail": {
+        "viewport": 375,
+        "document": 375,
+        "background": "none",
+        "color": "rgb(23, 41, 45)",
+        "accent": "rgb(35, 79, 204)",
+        "reduced": true
+      }
+    },
+    {
+      "name": "mobile 375x812 / design: Model Diagnostics",
+      "status": "PASS",
+      "detail": {
+        "viewport": 375,
+        "document": 375,
+        "background": "none",
+        "color": "rgb(23, 41, 45)",
+        "accent": "rgb(35, 79, 204)",
+        "reduced": true
+      }
+    },
+    {
+      "name": "mobile 375x812 / design: Data Contract",
+      "status": "PASS",
+      "detail": {
+        "viewport": 375,
+        "document": 375,
+        "background": "none",
+        "color": "rgb(23, 41, 45)",
+        "accent": "rgb(35, 79, 204)",
+        "reduced": true
+      }
+    },
+    {
+      "name": "no uncaught JavaScript errors",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "no application console errors (Cloud wrapper errors recorded separately)",
+      "status": "PASS",
+      "detail": null
+    }
+  ],
+  "console_errors": [
+    {
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "location": {
+        "url": "https://sdk.us.heap-api.com/js/heap-.js",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 403 ()",
+      "location": {
+        "url": "https://predicta-ai.streamlit.app/api/v1/app/event/open",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "location": {
+        "url": "https://predicta-ai.streamlit.app/api/v2/user/details",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "location": {
+        "url": "https://predicta-ai.streamlit.app/api/v2/user/details",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "location": {
+        "url": "https://predicta-ai.streamlit.app/api/v2/user/details",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    }
+  ],
+  "page_errors": [],
+  "trusted_model_name": "Random forest",
+  "model_sha256": "ec08e6117bc355c269ffce9ffa39f0e50ffe1e57e51ff500e2a146744faed297",
+  "main_http_status": 200,
+  "final_url": "https://predicta-ai.streamlit.app/",
+  "app_frame_url": "https://predicta-ai.streamlit.app/~/+/",
+  "platform_console_errors": [
+    {
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "location": {
+        "url": "https://sdk.us.heap-api.com/js/heap-.js",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 403 ()",
+      "location": {
+        "url": "https://predicta-ai.streamlit.app/api/v1/app/event/open",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "location": {
+        "url": "https://predicta-ai.streamlit.app/api/v2/user/details",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "location": {
+        "url": "https://predicta-ai.streamlit.app/api/v2/user/details",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "location": {
+        "url": "https://predicta-ai.streamlit.app/api/v2/user/details",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    }
+  ],
+  "finished_utc": "2026-10-13T12:13:56.991022+00:00",
+  "passed": true
+}

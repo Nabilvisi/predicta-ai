@@ -1,0 +1,209 @@
+{
+  "url": "https://predicta-ai.streamlit.app",
+  "headless": true,
+  "started_utc": "2026-10-13T12:12:55.169729+00:00",
+  "checks": [
+    {
+      "name": "real WebGL geometry rendered",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "rotation works and pause stops the frame loop",
+      "status": "PASS",
+      "detail": {
+        "initial_frames": 25,
+        "rotating_frames": 98,
+        "paused_frames": 119
+      }
+    },
+    {
+      "name": "animated explode and assemble complete",
+      "status": "PASS",
+      "detail": {
+        "exploded_spread": 1,
+        "assembled_spread": 0
+      }
+    },
+    {
+      "name": "keyboard, focus and tap alternatives",
+      "status": "PASS",
+      "detail": {
+        "yaw_before": -0.52,
+        "yaw_after": -0.3,
+        "focus_outline": "solid"
+      }
+    },
+    {
+      "name": "offscreen loop pauses and resumes on return",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "WebGL context loss has static fallback and recovers",
+      "status": "PASS",
+      "detail": {
+        "fallback_visible": true,
+        "restored_renderer": "webgl"
+      }
+    },
+    {
+      "name": "local licensed fonts load without a runtime CDN",
+      "status": "PASS",
+      "detail": [
+        {
+          "family": "KaTeX_AMS",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Caligraphic",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Caligraphic",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Fraktur",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Fraktur",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Math",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Math",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Script",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size1",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size2",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size3",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size4",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Typewriter",
+          "status": "unloaded"
+        },
+        {
+          "family": "Source Code Pro",
+          "status": "unloaded"
+        },
+        {
+          "family": "Source Code Pro",
+          "status": "unloaded"
+        },
+        {
+          "family": "Source Sans",
+          "status": "loaded"
+        },
+        {
+          "family": "Source Sans",
+          "status": "unloaded"
+        },
+        {
+          "family": "Source Serif",
+          "status": "unloaded"
+        },
+        {
+          "family": "Source Serif",
+          "status": "unloaded"
+        },
+        {
+          "family": "Material Symbols Rounded",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "status": "loaded"
+        },
+        {
+          "family": "Instrument Serif",
+          "status": "loaded"
+        }
+      ]
+    },
+    {
+      "name": "mobile reduced motion disables autoplay and transitions",
+      "status": "PASS",
+      "detail": {
+        "automatic_frames_during_idle": 0,
+        "transitions": "immediate"
+      }
+    },
+    {
+      "name": "375x812 3D layout, touch controls and bounded resolution",
+      "status": "PASS",
+      "detail": {
+        "width": 343,
+        "scrollWidth": 343,
+        "dpr": 1,
+        "canvasWidth": 343,
+        "canvasCSSWidth": 343
+      }
+    },
+    {
+      "name": "WebGL unavailable shows accessible static illustration",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "no uncaught illustration JavaScript errors",
+      "status": "PASS",
+      "detail": null
+    }
+  ],
+  "page_errors": [],
+  "passed": true,
+  "finished_utc": "2026-10-13T12:14:04.613146+00:00"
+}
