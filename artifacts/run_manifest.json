@@ -1,0 +1,47 @@
+{
+  "release_type": "authentic FD001 real-data Ridge baseline, NOT executed Python notebook champion",
+  "dataset": "NASA C-MAPSS FD001 \u2014 physics-simulated",
+  "data_source": "https://github.com/PunVas/nasa-c-mapss",
+  "source_blob_sha1": {
+    "train_FD001.txt": "d2809918c8b75fa3319714658ae994deb2017a89",
+    "test_FD001.txt": "7844fbf8d6ad32176f92544ad4f4c456481d930d",
+    "RUL_FD001.txt": "e8dd7cfeee96d2dfd55166f5758227d36c096dd3"
+  },
+  "split": {
+    "training_engines": 70,
+    "validation_engines": 15,
+    "calibration_engines": 15,
+    "official_test_engines": 100,
+    "seed": 42,
+    "train_fractions": [
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1.0
+    ],
+    "validation_fractions": [
+      0.45,
+      0.65,
+      0.85
+    ],
+    "calibration_fraction": 0.65
+  },
+  "model": "standardized Ridge with alpha=1",
+  "hyperparameter_selection": "Validation MAE; 7 candidate alphas",
+  "metrics": {
+    "MAE": 19.426339282185044,
+    "RMSE": 24.99653752229216,
+    "empirical_test_interval_coverage": 1.0
+  },
+  "calibration_radius_cycles": 60.26161596337235,
+  "limitations": [
+    "Test interval coverage 100% but extremely broad; interpret with caution",
+    "JS solver training validated separately from future notebook training",
+    "Model is a transparent interim baseline, not the notebook final model"
+  ]
+}

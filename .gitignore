@@ -1,0 +1,14 @@
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+.env
+*.pyc
+artifacts/*.joblib
+artifacts/*.csv
+artifacts/*.json
+data/raw/*.txt
+data/sample/*.csv
+artifacts/executed_training_notebook.ipynb
+*.zip
+*.png
