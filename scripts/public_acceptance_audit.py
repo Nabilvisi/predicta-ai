@@ -190,7 +190,7 @@ def main():
                 check('mobile 375x812 / design: ' + name, mobile_tab)
             mobile_context.close()
             check('no uncaught JavaScript errors', lambda: require(not report['page_errors'], str(report['page_errors'])))
-            known_platform = [e for e in report['console_errors'] if ('heap-' in e['location'].get('url','') or '/api/v2/user/details' in e['location'].get('url',''))]
+            known_platform = [e for e in report['console_errors'] if ('heap-' in e['location'].get('url','') or '/api/v2/user/details' in e['location'].get('url','') or '/api/v1/app/event/open' in e['location'].get('url',''))]
             report['platform_console_errors'] = known_platform
             app_errors = [e for e in report['console_errors'] if e not in known_platform]
             check('no application console errors (Cloud wrapper errors recorded separately)', lambda: require(not app_errors, str(app_errors)))

@@ -55,6 +55,7 @@ def main():
             page.goto(args.url, wait_until='domcontentloaded', timeout=90000)
             app, scene = frames(page)
             scene.locator('.scene[data-animation="paused"]').wait_for(timeout=15000)
+            app.get_by_role('tabpanel', name='Overview', exact=True).locator('.js-plotly-plot .main-svg').first.wait_for(state='visible', timeout=90000)
             check('real WebGL geometry rendered', lambda: require(state(scene)['renderer'] == 'webgl', 'No WebGL rendering'))
             scene.locator('#engine').screenshot(path=out / 'turbine-canvas.png')
             page.screenshot(path=out / 'overview-desktop.png')

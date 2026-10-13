@@ -80,7 +80,7 @@ with st.sidebar:
     st.header("Workspace")
     uploaded = st.file_uploader("Upload sensor history CSV", type=["csv"], help="26 fields: engine_id, cycle, 3 settings and 21 sensor channels.")
     if SAMPLE.exists():
-        st.download_button("Download example engine history", SAMPLE.read_bytes(), file_name="engine_history.csv", mime="text/csv")
+        st.download_button("Download example engine history", SAMPLE.read_bytes(), file_name="engine_history.csv", mime="text/csv", on_click="ignore")
     st.divider()
     critical = st.slider("Immediate review threshold (cycles)", 5, 90, 30, 5)
     warning = st.slider("Watchlist threshold (cycles)", critical + 5, 200, max(60,critical+5), 5)
@@ -143,7 +143,7 @@ with tabs[0]:
             st.plotly_chart(fig, use_container_width=True)
         with st.expander("Engine values"):
             st.dataframe(display_preds.round(2), use_container_width=True, hide_index=True)
-            st.download_button("Download fleet report", display_preds.to_csv(index=False).encode(), "predicta_fleet_report.csv", "text/csv")
+            st.download_button("Download fleet report", display_preds.to_csv(index=False).encode(), "predicta_fleet_report.csv", "text/csv", on_click="ignore")
     else:
         st.info("Load engine sensor observations to display fleet analytics.")
 
@@ -190,7 +190,7 @@ with tabs[2]:
     if predictions is None:
         st.info("Upload valid engine history to score assets.")
     else:
-        st.download_button("Export RUL predictions", display_preds.to_csv(index=False).encode(), "predicta_rul_predictions.csv", "text/csv")
+        st.download_button("Export RUL predictions", display_preds.to_csv(index=False).encode(), "predicta_rul_predictions.csv", "text/csv", on_click="ignore")
         chosen = st.selectbox("Inspect engine", predictions.engine_id.tolist(), key="pred_engine")
         p = predictions.loc[predictions.engine_id.eq(chosen)].iloc[0]
         st.caption(f"Engine {chosen} · observation cycle {int(p.cycle)} · research estimate, not maintenance instructions")
@@ -217,7 +217,7 @@ with tabs[3]:
         top[0].metric("Review now",int((ranked.priority=="Review now").sum()))
         top[1].metric("Review soon",int((ranked.priority=="Review soon").sum()))
         top[2].metric("Planning shortlist",len(active))
-        st.download_button("Export prioritized worklist",ranked.to_csv(index=False).encode(),"predicta_maintenance_worklist.csv","text/csv")
+        st.download_button("Export prioritized worklist",ranked.to_csv(index=False).encode(),"predicta_maintenance_worklist.csv","text/csv", on_click="ignore")
         bars(active, "engine_id", "rul_estimate", f"Top {len(active)} engines by planning priority", "priority", color_map=PRIORITY_COLORS)
         with st.expander("Full worklist & policy"):
             st.dataframe(ranked[["engine_id","cycle","rul_estimate","rul_lower","rul_upper","priority"]].round(2),use_container_width=True,hide_index=True)
