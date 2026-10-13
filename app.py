@@ -62,8 +62,19 @@ def read_optional(path: Path) -> pd.DataFrame:
     except Exception:
         return pd.DataFrame()
 
-def bars(df: pd.DataFrame, x: str, y: str, title: str, color: str | None = None):
-    fig = px.bar(df, x=x, y=y, color=color, title=title, color_discrete_sequence=["#30b6d7","#ffbf69","#75d2ac","#b197fc"])
+PRIORITY_COLORS = {
+    "Review now": "#ef4444",
+    "Review soon": "#f59e0b",
+    "Watchlist": "#38bdf8",
+    "Routine": "#4bd5ca",
+}
+
+def bars(df: pd.DataFrame, x: str, y: str, title: str, color: str | None = None, color_map: dict | None = None):
+    fig = px.bar(
+        df, x=x, y=y, color=color, title=title,
+        color_discrete_map=color_map,
+        color_discrete_sequence=["#30b6d7", "#ffbf69", "#75d2ac", "#b197fc"]
+    )
     fig.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", height=350)
     st.plotly_chart(fig, use_container_width=True)
 
@@ -146,7 +157,7 @@ with tabs[0]:
         with right:
             counts = ranked.priority.value_counts().reindex(["Review now","Review soon","Watchlist","Routine"],fill_value=0).reset_index()
             counts.columns = ["Priority","Engines"]
-            bars(counts,"Priority","Engines","Priority distribution")
+            bars(counts, "Priority", "Engines", "Priority distribution", color="Priority", color_map=PRIORITY_COLORS)
     else:
         st.info("Load engine sensor observations to display fleet analytics.")
 
@@ -165,7 +176,7 @@ with tabs[1]:
             sd = values.std(ddof=0)
             values = (values - values.mean()) / sd if sd > 0 else values * 0.0
         fig = go.Figure()
-        fig.add_scatter(x=subset.cycle, y=values, name=signal, mode="lines", line={"color":"#4bd5ca"})
+        fig.add_scatter(x=subset.cycle, y=values, name=signal, mode="lines+markers", line={"color":"#4bd5ca"}, marker={"size": 4})
         fig.update_layout(title=f"Engine {engine} · {signal}", xaxis_title="Operating cycle", yaxis_title="Standardized value" if normalize else "Sensor value", template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", height=390)
         st.plotly_chart(fig, use_container_width=True)
         st.dataframe(subset[["engine_id","cycle",signal,f"{signal}_mean5"]] if signal in bundle.get("rolling_sensors",[]) else subset[["engine_id","cycle",signal]], use_container_width=True, hide_index=True)
@@ -219,7 +230,7 @@ with tabs[3]:
         top[2].metric("Planning shortlist",len(active))
         st.dataframe(ranked[["engine_id","cycle","rul_estimate","rul_lower","rul_upper","priority"]].round(2),use_container_width=True,hide_index=True)
         st.download_button("Export prioritized worklist",ranked.to_csv(index=False).encode(),"predicta_maintenance_worklist.csv","text/csv")
-        bars(active,"engine_id","rul_estimate",f"Top {len(active)} engines by planning priority","priority")
+        bars(active, "engine_id", "rul_estimate", f"Top {len(active)} engines by planning priority", "priority", color_map=PRIORITY_COLORS)
         st.caption("Thresholds are user-controlled and have not been optimized using maintenance costs, failure probabilities or field histories.")
 
 with tabs[4]:
@@ -229,25 +240,29 @@ with tabs[4]:
     if predictions is None or not stats:
         st.info("Load engine-history data and a model with training sensor statistics to use this analysis.")
     else:
-        a,b,c = st.columns(3)
-        eid = a.selectbox("Engine", sorted(predictions.engine_id.tolist()), key="sensitivity_engine")
-        sensor = b.selectbox("Sensor to perturb", [k for k in SENSORS if float(stats.get(k,{}).get('std',0)) > 1e-10], key="sensitivity_sensor")
-        shift = c.slider("Shift (training σ)", -2.0, 2.0, 0.5, 0.25)
-        shifted = input_df.copy()
-        mask = shifted.engine_id.eq(eid)
-        idx = shifted.loc[mask].sort_values('cycle').tail(int(bundle.get('rolling_window',5))).index
-        shifted.loc[idx,sensor] = (pd.to_numeric(shifted.loc[idx,sensor]) + shift * float(stats[sensor]['std']))
-        try:
-            altered,_ = predict_assets(shifted,bundle)
-            base_value = float(predictions.loc[predictions.engine_id.eq(eid),'rul_estimate'].iloc[0])
-            updated_value = float(altered.loc[altered.engine_id.eq(eid),'rul_estimate'].iloc[0])
-            x,y,z=st.columns(3)
-            x.metric("Baseline RUL", f"{base_value:.2f} cycles")
-            y.metric("Perturbed RUL", f"{updated_value:.2f} cycles")
-            z.metric("Model response",f"{updated_value-base_value:+.2f} cycles")
-            st.caption("Only recent measurements for the selected sensor were adjusted. The model was not retrained. Do not infer physical causality from this change.")
-        except ValueError as e:
-            st.error(str(e))
+        perturbable_sensors = [k for k in SENSORS if float(stats.get(k, {}).get("std", 0)) > 1e-10]
+        if not perturbable_sensors:
+            st.info("No sensor channels with sufficient variance available for sensitivity analysis.")
+        else:
+            a, b, c = st.columns(3)
+            eid = a.selectbox("Engine", sorted(predictions.engine_id.tolist()), key="sensitivity_engine")
+            sensor = b.selectbox("Sensor to perturb", perturbable_sensors, key="sensitivity_sensor")
+            shift = c.slider("Shift (training σ)", -2.0, 2.0, 0.5, 0.25)
+            shifted = input_df.copy()
+            mask = shifted.engine_id.eq(eid)
+            idx = shifted.loc[mask].sort_values('cycle').tail(int(bundle.get('rolling_window',5))).index
+            shifted.loc[idx,sensor] = (pd.to_numeric(shifted.loc[idx,sensor]) + shift * float(stats[sensor]['std']))
+            try:
+                altered,_ = predict_assets(shifted,bundle)
+                base_value = float(predictions.loc[predictions.engine_id.eq(eid),'rul_estimate'].iloc[0])
+                updated_value = float(altered.loc[altered.engine_id.eq(eid),'rul_estimate'].iloc[0])
+                x,y,z=st.columns(3)
+                x.metric("Baseline RUL", f"{base_value:.2f} cycles")
+                y.metric("Perturbed RUL", f"{updated_value:.2f} cycles")
+                z.metric("Model response",f"{updated_value-base_value:+.2f} cycles")
+                st.caption("Only recent measurements for the selected sensor were adjusted. The model was not retrained. Do not infer physical causality from this change.")
+            except ValueError as e:
+                st.error(str(e))
 
 with tabs[5]:
     st.subheader("Model validation and interpretability")
@@ -265,20 +280,30 @@ with tabs[5]:
         bars(imp,"mae_increase","feature","Permutation importance (internal validation)")
     testpred = read_optional(TEST_PREDS)
     if len(testpred) and {"true_rul","predicted_rul"}.issubset(testpred.columns):
-        chart = px.scatter(testpred,x="true_rul",y="predicted_rul",title="Official NASA test: actual vs predicted RUL")
-        maxv=float(max(testpred.true_rul.max(),testpred.predicted_rul.max()))
-        chart.add_shape(type="line",x0=0,y0=0,x1=maxv,y1=maxv,line={"dash":"dash","color":"#feb366"})
-        chart.update_layout(template="plotly_dark",paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(0,0,0,0)")
-        st.plotly_chart(chart,use_container_width=True)
+        chart = px.scatter(
+            testpred, x="true_rul", y="predicted_rul",
+            labels={"true_rul": "Actual RUL (cycles)", "predicted_rul": "Predicted RUL (cycles)"},
+            hover_data=[c for c in ["engine_id", "cycle", "rul_lower", "rul_upper", "absolute_error"] if c in testpred.columns],
+            title="Official NASA test: actual vs predicted RUL",
+            color_discrete_sequence=["#4bd5ca"]
+        )
+        maxv = float(max(testpred.true_rul.max(), testpred.predicted_rul.max()))
+        chart.add_shape(type="line", x0=0, y0=0, x1=maxv, y1=maxv, line={"dash": "dash", "color": "#feb366"})
+        chart.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+        st.plotly_chart(chart, use_container_width=True)
     if observations is not None and "reference_features" in bundle:
-        current=observations.sort_values(["engine_id","cycle"]).groupby("engine_id").tail(1)
-        reference=bundle["reference_features"]
-        checks=[]
-        for feature in bundle.get("drift_features",[]):
-            checks.append({"feature":feature,"PSI":population_stability_index(reference[feature],current[feature])})
+        current = observations.sort_values(["engine_id","cycle"]).groupby("engine_id").tail(1)
+        reference = bundle["reference_features"]
+        checks = []
+        for feature in bundle.get("drift_features", []):
+            psi_val = population_stability_index(reference[feature], current[feature])
+            checks.append({
+                "feature": feature,
+                "PSI": round(psi_val, 4) if np.isfinite(psi_val) else "N/A (< 5 assets)"
+            })
         st.markdown("#### Exploratory input drift diagnostics")
-        st.dataframe(pd.DataFrame(checks),use_container_width=True,hide_index=True)
-        st.caption("PSI is descriptive here: sample sizes may be small and alert thresholds are not calibrated.")
+        st.dataframe(pd.DataFrame(checks), use_container_width=True, hide_index=True)
+        st.caption("PSI is descriptive here: sample sizes may be small and alert thresholds are not calibrated. At least 5 assets are required for quantile estimation.")
     st.caption("Permutation importance describes sensitivity of fitted predictions to individual predictors, not causal contributions.")
 
 with tabs[6]:

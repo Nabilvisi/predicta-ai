@@ -69,3 +69,78 @@ def test_inference_model_contract():
 def test_psi_symmetric_identity():
     z=np.linspace(0,10,101)
     assert abs(population_stability_index(z,z))<1e-12
+
+
+def test_validation_rejects_malformed_inputs():
+    with pytest.raises(ValueError, match="At least one observation"):
+        validate_raw(pd.DataFrame(columns=RAW_COLUMNS))
+    
+    with pytest.raises(ValueError, match="Missing required columns"):
+        validate_raw(pd.DataFrame({"engine_id": [1], "cycle": [1]}))
+        
+    raw = observations()
+    raw["sensor_1"] = raw["sensor_1"].astype(object)
+    raw.loc[0, "sensor_1"] = "invalid_string"
+    with pytest.raises(ValueError):
+        validate_raw(raw)
+        
+    raw = observations()
+    raw.loc[0, "sensor_3"] = np.inf
+    with pytest.raises(ValueError, match="infinite or non-finite"):
+        validate_raw(raw)
+
+    raw = observations()
+    raw["engine_id"] = raw["engine_id"].astype(float)
+    raw.loc[0, "engine_id"] = 1.5
+    with pytest.raises(ValueError, match="integer"):
+        validate_raw(raw)
+
+    raw = observations()
+    raw.loc[0, "cycle"] = 0
+    with pytest.raises(ValueError, match="positive"):
+        validate_raw(raw)
+
+
+def test_single_observation_engine():
+    row = dict.fromkeys(RAW_COLUMNS, 2.0)
+    row.update(engine_id=99, cycle=1)
+    df = pd.DataFrame([row])
+    fe = engineer_features(df)
+    assert len(fe) == 1
+    assert np.isfinite(fe[FEATURES].to_numpy(dtype=float)).all()
+    assert fe.loc[0, "sensor_2_std5"] == 0.0
+    assert fe.loc[0, "sensor_2_delta5"] == 0.0
+
+
+def test_conformal_radius_boundaries():
+    with pytest.raises(ValueError, match="alpha"):
+        conformal_radius([1, 2], [1, 2], alpha=0.0)
+    with pytest.raises(ValueError, match="alpha"):
+        conformal_radius([1, 2], [1, 2], alpha=1.0)
+    with pytest.raises(ValueError, match="finite and nonempty"):
+        conformal_radius([], [])
+    with pytest.raises(ValueError, match="finite and nonempty"):
+        conformal_radius([1], [np.nan])
+
+
+def test_priority_threshold_validation():
+    scored = pd.DataFrame({"engine_id": [1], "cycle": [10], "rul_estimate": [50.0], "rul_lower": [40.0], "rul_upper": [60.0]})
+    with pytest.raises(ValueError, match="greater"):
+        assign_priority(scored, critical=30, watch=30)
+    with pytest.raises(ValueError, match="greater"):
+        assign_priority(scored, critical=30, watch=20)
+    with pytest.raises(ValueError, match="greater"):
+        assign_priority(scored, critical=-5, watch=20)
+
+
+def test_psi_edge_cases():
+    # Fewer than 5 observations
+    assert np.isnan(population_stability_index([1, 2, 3], [1, 2, 3]))
+    # Zero variance in base
+    assert np.isnan(population_stability_index([5.0] * 10, [5.0, 5.1, 5.2, 5.3, 5.4]))
+    # Non-finite values properly filtered
+    base = np.array([1, 2, 3, 4, 5, 6, 7, 8, np.nan, np.inf])
+    rec = np.array([1, 2, 3, 4, 5, 6, 7, 8, -np.inf])
+    val = population_stability_index(base, rec)
+    assert np.isfinite(val) and abs(val) < 1e-10
+
